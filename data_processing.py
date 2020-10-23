@@ -7,11 +7,10 @@ def data_read():
 
 
 def data_process(data):
-    #根据分析，对一下三个特征的空缺值用平均值进行填充
+    # 根据分析，对以下三个特征的空缺值用平均值进行填充
     fill_list = ['Glucose', 'BloodPressure', 'BMI']
 
     for feature in fill_list:
-        #print(feature)
         zeros = dict(data[feature].value_counts())
         num = len(data.values) - zeros[0]
         avg = data[feature].sum() / num
@@ -20,10 +19,13 @@ def data_process(data):
             avg = round(avg, 1)
         else:
             avg = int(avg)
-        print(avg)
 
         data.loc[data[feature] == 0, feature] = avg
-        #print(dict(data[feature].value_counts()))
+
+    # 以下特征的空缺值由0替换为-1
+    replace_list = ['SkinThickness', 'Insulin']
+    for feature in replace_list:
+        data.loc[data[feature] == 0, feature] = -1
 
 
 def zero_count(data):
@@ -42,7 +44,7 @@ def zero_count(data):
 
 if __name__ == '__main__':
     da = data_read()
-    #print(da.info())
+    print(da.columns)
 
     #zero_count(da)
     data_process(da)
