@@ -1,4 +1,6 @@
+import random
 import pandas as pd
+import numpy as np
 from matplotlib import pyplot as plt
 
 
@@ -42,11 +44,37 @@ def zero_count(data):
             print(0)
 
 
+# 将数据集分为k个不相交的子集，每个子集中的两种标签的数据数量相等
+def cross_validation(data, k):
+    count = data['Outcome'].value_counts()
+    for i in range(len(count)):
+        count[i] = int(count[i] / k)
+    print(count)
+
+    random_list = [data[data.Outcome == 0].index.tolist(), data[data.Outcome == 1].index.tolist()]
+    for id_list in random_list:
+        random.shuffle(id_list)
+    # print(random_list)
+
+    ret = []
+    for i in range(k - 1):
+        temp = set(random_list[0][i*count[0]:(i+1)*count[0]]) | set(random_list[1][i*count[1]:(i+1)*count[1]])
+        ret.append(list(temp))
+        # print(temp)
+
+    temp = set(random_list[0][(k-1)*count[0]:]) | set(random_list[1][(k-1)*count[1]:])
+    ret.append(temp)
+    # print(len(temp), len(ret))
+    return ret
+
+
 if __name__ == '__main__':
     da = data_read()
     print(da.columns)
 
-    #zero_count(da)
+    # zero_count(da)
     data_process(da)
-    zero_count(da)
+    # zero_count(da)
+
+    cross_validation(da, 10)
     print('finished')
