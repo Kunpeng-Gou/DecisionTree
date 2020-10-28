@@ -1,10 +1,11 @@
 import pandas as pd
+import numpy as np
+import data_processing as dp
 
 data = pd.read_csv('diabetes.csv')
 
-print(data)
-print(data.info())
-print(data.values)
+print(len(data.values))
 
-features = data.keys
-print(features)
+for person in data.values:
+    print(person)
+    #person['Outcome']
