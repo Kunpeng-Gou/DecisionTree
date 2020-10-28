@@ -24,7 +24,7 @@ def data_process(data):
 
         data.loc[data[feature] == 0, feature] = avg
 
-    # 以下特征的空缺值由0替换为-1
+    # 以下特征的空缺值由0替换为-1（或者说替换为一个不会出现在正常情况下且不与其他特征的值冲突的值）
     replace_list = ['SkinThickness', 'Insulin']
     for feature in replace_list:
         data.loc[data[feature] == 0, feature] = -1
@@ -37,7 +37,6 @@ def zero_count(data):
     for feature in features:
         print(feature)
         zeros = dict(data[feature].value_counts())
-        #print(zeros)
         if 0 in zeros.keys():
             print(zeros[0])
         else:
@@ -49,22 +48,21 @@ def cross_validation(data, k):
     count = data['Outcome'].value_counts()
     for i in range(len(count)):
         count[i] = int(count[i] / k)
-    print(count)
 
+    # random_list里储存结果为0，1的id列表，再分别打乱这些id
     random_list = [data[data.Outcome == 0].index.tolist(), data[data.Outcome == 1].index.tolist()]
     for id_list in random_list:
         random.shuffle(id_list)
-    # print(random_list)
 
+    # 前k-1份的数量是相同的
     ret = []
     for i in range(k - 1):
         temp = set(random_list[0][i*count[0]:(i+1)*count[0]]) | set(random_list[1][i*count[1]:(i+1)*count[1]])
         ret.append(list(temp))
-        # print(temp)
 
+    # 最后一份处理k不整除count的情况
     temp = set(random_list[0][(k-1)*count[0]:]) | set(random_list[1][(k-1)*count[1]:])
     ret.append(temp)
-    # print(len(temp), len(ret))
     return ret
 
 
