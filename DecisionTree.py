@@ -38,13 +38,14 @@ class DecisionTree(object):
         self.root = Node(train_id_list)    # 根结点
         self.id_weight = None    # 暂时还未用到
 
-    # 返回最佳分类特征，最佳分割点，对于的信息增益或信息增益比
+    # 返回最佳分类特征，最佳分割点，对应的信息增益或信息增益比
     def choose_best(self, node):
         best_feature = None
         global_best_slip = 0
         global_best_ret = np.inf
         return best_feature, global_best_slip, global_best_ret
 
+    # 建树
     def build_tree(self, node=None):
         if not node:
             node = self.root
